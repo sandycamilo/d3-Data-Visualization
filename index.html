@@ -7,161 +7,83 @@
     <title>Games-</title>
   </head>
   <body>
-    <div id="bubbles" width="500" height="500">
+    <svg class= "bubble" id="iris" width="100%" height="900">
       <!-- data  -->
-    </div>
-
-    <div id="games" width="500" height="500">
-      <!-- data  -->
-    </div>
+    </svg>
     <script src="https://d3js.org/d3.v6.min.js"></script>
     
     <script>
+      d3.csv('./iris.csv')
+        .then(csv => handleData(csv))
+        .catch((err) => console.log(err))
 
-      // const body = document.querySelector('#games')
+      function handleData(csv) {
+        console.log(csv)
+        const color = d3.scaleSequential()
+          .domain([0, csv.length])
+          .interpolator(d3.interpolateRainbow);
+
+        // turning it into an obj 
+        const dataset = {
+          children: csv.map((iris) => {
+            return {
+              name: iris.Species,
+              petal_length: iris.PetalLengthCm,
+              index: iris.Id
+            }
+          })
+        }
       
-      // const sales = games.map(game => game.Global_Sales)
-      // const maxGlobal_Sales = Math.max(...sales)
-
-      // metal.sort((a, b) => {
-      //   return a.sales - b.sales
-      // })
-	
-      // games.forEach((game, index) => {
-      //   const el = document.createElement('div')
-      //   body.appendChild(el)
-      //   el.innerHTML = game.Name
-      //   el.style.width = `${band.sales / maxGlobal_Sales * 100}%`
-      //   const hue = 360 / games.length * index
-      //   el.style.height = '100px'
-      //   el.style.backgroundColor = `hsl(${hue}, 100%, 50%)`
-      //   el.style.margin = '2px'
-      // })
-
-
-      // d3.select('body')
-      //   .selectAll('div')
-      //   .data([5,3,2,1,19])
-      //   .enter()
-      //   .append('div')
-      //   .text((d) => `$${d.toFixed(2)}`)
-      //   .style('padding', '1em')
-      //   .style('background-color', 'red')
-      //   .style('width', (d) => `${d / 10 * 100}%`)
-
-      d3.csv('iris.csv')
-        // .then(csv => console.log(csv))
-        .then(csv => [
-          d3.select('#bubbles')
-                .selectAll('div')
-                .data(csv)
-                .enter()
-                .append('div')
-                .text(d => d.Species)
-                .style('border', '1px solid white')
-                .style('padding', '1em')
-                .style('background-color', 'orange')
-                // .style('width' = `${band.fans / maxFans * 100}%`)
-
-                // .style('border', '1px solid orange')
-                // .selectAll('div')
-                // .data(csv)
-                // .enter()
-                // .append('circle')
-                // .style('background-color', 'orange')
-                // // .attr('fill', d => 'orange')
-                // .attr('cx', '50%')
-                // .attr('cy', '50%')
-                // .attr('r', 20)
-                // .style('border', '1px solid white')
-                // .text(d => d.Species)
-                // .size([600, 600])
-                // .attr('cx', (d, i) => i * 500 / data.length)
-                // .attr('cy', d => d.a * 500)
-                // .attr('r', d => d.c * 100)
-                  
-        ])
+        const bubble = d3.pack(dataset)
+                        .size([900, 900])
+                        .padding(1.5)
         
+        const svg = d3.select('#iris')
+                      // .style('border', '3px solid')
 
+        const nodes = d3.hierarchy(dataset)
+                      .sum((d) => d.petal_length)
 
+        const node = svg.selectAll('.node')
+          .data(bubble(nodes).descendants())
+          .enter()
+          .filter((d) => !d.children)
+          .append("g")
+          .attr("class", "node")
+          .attr("transform", (d) =>`translate(${d.x}px, ${d.y}px`)
 
-      // let color = 
-      //   d3
-      //   .scaleOrdinal(d3.schemeCategory20)
+        node.append("circle")
+          .attr("r", (d) =>  d.r)
+          .style("fill", (d,i) => color(i))
+          .attr('cx', (d) => d.x)
+          .attr('cy', (d) => d.y)
+          .on('mouseover', function (e, d) {
+            d3.select(this)
+              .style("fill", 'red')
+              .attr('x', (d) => d.x)
+              .attr('y', (d) => d.y)
+          })
+          //  event -> data 
+          .on('mouseout', function (e, d) {
+            console.log(this)
+            d3.select(this)
+              .style('fill', color(d.data.index))
+          })
 
-      // const bubble = 
-      //   d3
-      //     .pack("games.js")
-      //     .slice(0,10)
-      //     .size([diameter, diameter])
-      //     .padding(1.5)
-      
-      // const svg = 
-      //   d3
-      //   .select('#bubbles')
-      //   .append('svg')
-      //   .attr('width', diameter)
-      //   .attr('height', diameter)
-      //   .attr('class', 'bubble')
-      
-      // const nodes = 
-      //   d3
-      //   .hierarchy("games.js")
-      //   .sum(function(d) {
-      //     return d.Rank
-      //   })
-
-      // const node = 
-      //   svg
-      //     .selectAll(".node")
-      //     .data(bubble(nodes).descendants())
-      //     .enter()
-      //     .filter(function(d){
-      //         return  !d.games
-      //     })
-      //     .append("g")
-      //     .attr("class", "node")
-      //     .attr("transform", function(d) {
-      //         return "translate(" + d.x + "," + d.y + ")";
-      //     });
-
-      // node.append("title")
-      //     .text(function(d) {
-      //         return d.Name + ": " + d.Rank;
-      //     });
-
-      // node.append("circle")
-      //     .attr("r", function(d) {
-      //         return d.r;
-      //     })
-      //     .style("fill", function(d,i) {
-      //         return color(i);
-      //     });
-
-      // node.append("text")
-      //     .attr("dy", ".2em")
-      //     .style("text-anchor", "middle")
-      //     .text(function(d) {
-      //         return d.data.Name.substring(0, d.r / 3);
-      //     })
-      //     .attr("font-size", function(d){
-      //         return d.r/5;
-      //     })
-      //     .attr("fill", "white");
-
-      // node.append("text")
-      //     .attr("dy", "1.3em")
-      //     .style("text-anchor", "middle")
-      //     .text(function(d) {
-      //         return d.data.Rank;
-      //     })
-      //     .attr("font-size", function(d){
-      //         return d.r/5;
-      //     })
-      //     .attr("fill", "white");
-
-      // d3.select(self.frameElement)
-      //   .style("height", diameter + "px");
+        node.append('text')
+          .attr("r", (d) =>  d.r)
+          .attr('x', (d) => d.x)
+          .attr('y', (d) => d.y)
+          .text((d) => d.data.petal_length)
+          .attr('text-anchor', 'middle')
+          .attr('alignment-baseline', 'middle')
+          .on('mouseover', function (e, d) {
+            d3.select(this)
+              .style('visibility', 'visible')
+              
+             
+          })
+      }
   </script>
   </body>
 </html>
