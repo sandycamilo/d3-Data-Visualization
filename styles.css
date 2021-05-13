@@ -1,0 +1,36 @@
+body {
+  margin-left: 360px;
+  margin-top: 90px;
+}
+
+h1 {
+  font-size: 100px;
+  margin: 80;
+  font-family: sans-serif;
+  position: relative;
+  left: -50px;
+}
+
+.Table {
+  display: flex;
+  flex-direction: row;
+  margin: 20px;
+  position: relative;
+  top: -80px;
+  left: 100px;
+}
+
+p {
+  margin: 20px;
+  padding: 20px;
+}
+
+h2 {
+  margin: 20px;
+  padding: 15px;
+}
+
+.bubble {
+  position: relative;
+  top: -120px;
+}
