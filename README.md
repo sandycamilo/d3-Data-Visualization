@@ -4,12 +4,8 @@ Data visualiation of the Iris Dataset originally published at [UCI Machine Learn
 
 # Built with:
 
- - D3.js
+- D3.js
 
- # Demo:
+# Check it out:
 
-![](http://g.recordit.co/2Rxej8k2PL.gif)
-
-
-# Check it out: 
 https://sandycamilo.github.io/d3-Data-Visualization/
