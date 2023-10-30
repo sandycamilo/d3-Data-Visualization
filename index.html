@@ -28,31 +28,30 @@
         .catch((err) => console.log(err))
 
       function handleData(csv) {
-        console.log(csv)
         const color = d3.scaleSequential()
           .domain([0, csv.length])
           .interpolator(d3.interpolateRainbow);
 
-        // turning it into an obj 
         const dataset = {
           children: csv.map((iris) => {
             return {
               name: iris.Species,
               petal_length: iris.PetalLengthCm,
+              petal_width: iris.PetalWidthCm,
               index: iris.Id
             }
           })
         }
       
         const bubble = d3.pack(dataset)
-                        .size([900, 900])
-                        .padding(1.5)
+                        .size([800, 800])
+                        .padding(4.0)
         
         const svg = d3.select('#iris')
-                      // .style('border', '3px solid')
 
         const nodes = d3.hierarchy(dataset)
                       .sum((d) => d.petal_length)
+                      .sum((d) => d.petal_width)
 
         const node = svg.selectAll('.node')
           .data(bubble(nodes).descendants())
@@ -69,29 +68,30 @@
           .attr('cy', (d) => d.y)
           .on('mouseover', function (e, d) {
             d3.select(this)
-              .style("fill", 'red')
-              .attr('x', (d) => d.x)
-              .attr('y', (d) => d.y)
-          })
-          //  event -> data 
-          .on('mouseout', function (e, d) {
-            console.log(this)
-            d3.select(this)
-              .style('fill', color(d.data.index))
-          })
+              .style("fill", 'orange')
 
-        node.append('text')
-          .attr("r", (d) =>  d.r)
-          .attr('x', (d) => d.x)
-          .attr('y', (d) => d.y)
-          .text((d) => d.data.petal_length)
-          .attr('text-anchor', 'middle')
-          .attr('alignment-baseline', 'middle')
-          .on('mouseover', function (e, d) {
-            d3.select(this)
-              .style('visibility', 'visible')
-          })
-      }
+        const tooltip = d3.select("#tooltip");
+        tooltip.style("opacity", 1)
+          .html(`Species: ${d.data.name}<br>Petal Length: ${d.data.petal_length} cm<br>Petal Width: ${d.data.petal_width} cm`)
+          .style("left", (e.pageX + 10) + "px")
+          .style("top", (e.pageY - 20) + "px");
+      })
+      .on('mouseout', function (e, d) {
+        d3.select(this).style('fill', (d, i) => color(d.data.index));
+
+        d3.select("#tooltip").style("opacity", 0);
+      });
+
+        d3.select("body").append("div")
+          .attr("id", "tooltip")
+          .style("position", "absolute")
+          .style("padding", "10px")
+          .style("background", "white")
+          .style("border", "1px solid #aaa")
+          .style("border-radius", "5px")
+          .style("pointer-events", "none")
+          .style("opacity", 0);
+            }
   </script>
   </body>
 </html>
