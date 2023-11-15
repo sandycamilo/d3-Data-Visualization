@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="https://d3js.org/d3.v6.min.js" charset="utf-8"></script>
+    <title>Iris Data Visualization</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com"> 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300&family=Quicksand:wght@300&display=swap" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iris Data Visualization</title>
+    <script src="https://d3js.org/d3.v6.min.js" charset="utf-8"></script>
   </head>
   <body>
     <h1>Iris Data Visualization</h1>
@@ -18,14 +18,16 @@
       <p>Iris-versicolor</p>
       <p>Iris-virginica</p>
     </div>
-    <svg class= "bubble" id="iris" width="100%" height="900">
-      <!-- data  -->
-    </svg>
+    <div class="bubble-container">
+      <svg class= "bubble" id="iris" width="100%" height="900">
+        <!-- data  -->
+      </svg>
+    </div>
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script>
       d3.csv('./iris.csv')
         .then(csv => handleData(csv))
-        .catch((err) => console.log(err))
+        .catch((err) => console.log(err));
 
       function handleData(csv) {
         const color = d3.scaleSequential()
@@ -39,19 +41,25 @@
               petal_length: iris.PetalLengthCm,
               petal_width: iris.PetalWidthCm,
               index: iris.Id
-            }
+            };
           })
-        }
-      
+        };
+
+        const svgWidth = Math.min(window.innerWidth, 800); 
+        const svgHeight = svgWidth;
+
         const bubble = d3.pack(dataset)
-                        .size([800, 800])
-                        .padding(4.0)
-        
+          .size([svgWidth, svgHeight])
+          .padding(4.0);
+
         const svg = d3.select('#iris')
+          .attr('width', svgWidth)
+          .attr('height', svgHeight)
+          .style('left', `calc(50% - ${svgWidth / 2}px)`); 
 
         const nodes = d3.hierarchy(dataset)
-                      .sum((d) => d.petal_length)
-                      .sum((d) => d.petal_width)
+          .sum((d) => d.petal_length)
+          .sum((d) => d.petal_width);
 
         const node = svg.selectAll('.node')
           .data(bubble(nodes).descendants())
@@ -59,28 +67,26 @@
           .filter((d) => !d.children)
           .append("g")
           .attr("class", "node")
-          .attr("transform", (d) =>`translate(${d.x}px, ${d.y}px`)
+          .attr("transform", (d) => `translate(${d.x},${d.y})`);
 
         node.append("circle")
-          .attr("r", (d) =>  d.r)
-          .style("fill", (d,i) => color(i))
-          .attr('cx', (d) => d.x)
-          .attr('cy', (d) => d.y)
+          .attr("r", (d) => d.r)
+          .style("fill", (d, i) => color(i))
           .on('mouseover', function (e, d) {
             d3.select(this)
-              .style("fill", 'orange')
+              .style("fill", 'orange');
 
-        const tooltip = d3.select("#tooltip");
-        tooltip.style("opacity", 1)
-          .html(`Species: ${d.data.name}<br>Petal Length: ${d.data.petal_length} cm<br>Petal Width: ${d.data.petal_width} cm`)
-          .style("left", (e.pageX + 10) + "px")
-          .style("top", (e.pageY - 20) + "px");
-      })
-      .on('mouseout', function (e, d) {
-        d3.select(this).style('fill', (d, i) => color(d.data.index));
+            const tooltip = d3.select("#tooltip");
+            tooltip.style("opacity", 1)
+              .html(`Species: ${d.data.name}<br>Petal Length: ${d.data.petal_length} cm<br>Petal Width: ${d.data.petal_width} cm`)
+              .style("left", (e.pageX + 10) + "px")
+              .style("top", (e.pageY - 20) + "px");
+          })
+          .on('mouseout', function (e, d) {
+            d3.select(this).style('fill', (d, i) => color(d.data.index));
 
-        d3.select("#tooltip").style("opacity", 0);
-      });
+            d3.select("#tooltip").style("opacity", 0);
+          });
 
         d3.select("body").append("div")
           .attr("id", "tooltip")
@@ -91,7 +97,7 @@
           .style("border-radius", "5px")
           .style("pointer-events", "none")
           .style("opacity", 0);
-            }
-  </script>
+      }
+    </script>
   </body>
 </html>
