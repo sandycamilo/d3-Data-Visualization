@@ -1,91 +1,39 @@
 body {
   font-family: 'IBM Plex Mono', monospace;
-  margin: 0;
-  padding: 0;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
 }
 
 h1 {
-  font-size: 4vw;
+  font-size: 2vw;
   text-align: center;
-  top: 3vh;
 }
 
 .Table {
   display: flex;
-  flex-direction: column; 
-  margin: 1vw;
-  text-align: center;
-  margin-top: 1vw;
+  justify-content: center;
 }
 
 p {
-  margin: 1vw 0;
-  font-size: 2vw;
+  font-size: 1em;
+  align-items: center;
 }
 
 h2 {
-  margin: 1vw;
+  font-size: 1em;
   text-align: center;
 }
 
 .bubble-container {
-  width: 100%;
-  position: relative;
-  margin-top: 20%;
-  margin-left: 3vw; 
+  padding-top: 5vh; 
+  padding-left: 22vw; 
 }
 
-@media only screen and (min-width: 600px) {
+@media only screen and (max-width: 600px) {
   h1 {
-    font-size: 3vw; 
-  }
-
-  .Table {
-    display: flex;
-    text-align: center;
-    margin-left: -6%;
-  }
-
-  p {
-    font-size: 1.5vw; 
-    margin: 0 1vw;
-  }
-
-  h2 {
-    font-size: 1.5vw; 
+    font-size: 4vw;
   }
 
   .bubble-container {
-    width: 60%;
-    margin-top: 4vw;
-    margin-left: 20vw; 
-  }
-}
-
-@media only screen and (max-width: 599px) {
-  h1 {
-    font-size: 5vw; 
-  }
-
-  .Table {
-    margin-left: 0; 
-  }
-
-  p {
-    font-size: 3vw; 
-    margin: 0.5vw 1vw; 
-  }
-
-  h2 {
-    font-size: 3vw; 
-  }
-
-  .bubble-container {
-    width: 80%;
-    margin-top: 3vw; 
-    margin-left: 0;
+    padding-top: 2vh; 
+    padding-left: 1vw; 
   }
 }
