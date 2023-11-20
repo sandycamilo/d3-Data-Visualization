@@ -15,11 +15,15 @@ h1 {
 p {
   font-size: 1em;
   align-items: center;
+  padding: 8px;
+  position: relative;
+  top: 10px;
 }
 
 h2 {
   font-size: 1em;
   text-align: center;
+  padding: 20px;
 }
 
 .bubble-container {
